@@ -1,0 +1,46 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+   
+    <link rel="stylesheet" type="text/css" href="style.css"> 
+    <title>Table</title>
+  </head>
+
+  <body>  
+
+     <div class ="main_div" style="text-align: center;">
+        <input id="add_input" type="text">
+        <button id="add_btn">Add</button>
+     </div>
+
+     <div id="sort" style="text-align: center;">
+      <input name="sort" type="radio" value="asc_num" checked> Ascending order number
+      <input name="sort" type="radio" value="desc_num"> Descending order number
+      <input name="sort" type="radio" value="asc_alp" > In alphabetical order
+      <input name="sort" type="radio" value="desc_alp" > In reverse alphabetical order
+      </div>
+
+      <table  id="my_table">
+        <tr>
+          <th>№</th>
+          <th>Message</th>   
+        </tr> 
+        <% messages.forEach(function(item) { %>
+          <tr>
+            <th><%=item.id %></th>
+            <th><%=item.value %></th>
+          </tr>
+          <% }); %>
+        </table>
+
+ 
+      
+  </body>
+  
+</html>
+
+
+
+
