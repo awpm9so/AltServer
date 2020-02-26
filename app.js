@@ -30,8 +30,7 @@ app.get('/', (req, res)=>{
     let sql = 'SELECT * FROM message';
     let query = db.query(sql, (err, result) => {
         if (err) throw err;
-         console.log(result);
-         var mas =  ["qwe", "asd", "zxc"];
+     //console.log(result);
         res.render("index", {messages: result});
 
     });
@@ -41,9 +40,15 @@ app.get('/', (req, res)=>{
 
 //добавление новой записи
 app.post('/', urlencodedParser, function (req, res) {
+    res.set('Access-Control-Allow-Origin', '*')    
     if (!req.body) return res.sendStatus(400);
-    console.log(req.body);
-    res.send('Запись: ' + req.body.username + "добавлена!")
+    let post = {value: req.body.message};
+    let sql = `INSERT INTO message SET ?`;
+    let query = db.query(sql, post, (err, result) => {
+        if (err) throw err;
+        else
+        res.send('Запись "' + req.body.message +  '" добавлена!');
+    });    
   })
 
 
