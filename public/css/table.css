@@ -1,0 +1,23 @@
+
+table{
+    margin: auto;  
+}
+
+
+input{
+    font-size: 20px
+}
+
+ul{
+    font-size: 10px;
+    list-style-type: none; 
+    text-align: center;
+}
+
+#sort{
+    margin: auto;
+}
+
+.main_div{
+    margin: auto;
+}
