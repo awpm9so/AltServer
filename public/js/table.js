@@ -141,7 +141,7 @@ $('body').on('click', 'table', function (event) {
 
   if (!table.contains(target)) return;
 
-  if (event.target.className == 'delete_button') return; //игнорируем нажатие на кнопку "Delete"
+  if (event.target.className == 'delete_button btn btn-secondary') return; //игнорируем нажатие на кнопку "Delete"
   if (event.target.className == 'id') return; //игнорируем нажатие на № 
 
   if (target.className == 'edit-cancel') {

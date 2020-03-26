@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Таблица</title>
+    <title>Home page</title>
     <link rel="stylesheet" type="text/css" href="http://localhost:3000/static/css/table.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -14,11 +14,34 @@
 </head>
 
 <body>
-    <div class="main_div" actionstyle="text-align: center;">
-        <input id="add_input" type="text">
-        <button id="add_btn">Add</button>
-    </div>
 
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">List</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Account</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+
+
+    <div class="input">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="New message" id="add_input">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="add_btn">Добавить</button>
+            </div>
+        </div>
+    </div>
     <div id="sort" style="text-align: center;">
         <input name="sort" type="radio" value="asc_num" checked> Ascending order number
         <input name="sort" type="radio" value="desc_num"> Descending order number
@@ -28,11 +51,6 @@
 
 
     <table id="my_table" data-src={{id_user}}></table>
-
-
-
-
-
 </body>
 
 <script id="MyLoads" src="http://localhost:3000/static/js/table.js" type="text/javascript" defer></script>

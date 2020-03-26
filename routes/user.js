@@ -4,18 +4,36 @@ const db = require('../db/db');
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
+
+
+const redirectLogin = (req, res, next) => {
+    if (!req.session.id_user) {
+        res.redirect('/login')
+    }
+    else {
+        next();
+    }
+}
+const redirectHome = (req, res, next) => {
+    if (req.session.id_user) {
+        res.redirect('/home?id_user=' + req.session.id_user)
+    }
+    else {
+        next();
+    }
+}
+
 //аторизация
 router.post('/login', urlencodedParser, async (req, res) => {
     res.set('Access-Control-Allow-Origin', '*')
 
     try {
-        //console.log(req.body.login);
-        //console.log(req.body.password);
+
         let results = await db.login(req.body.login, req.body.password);
         if (results.length == 1) {
-            // res.redirect('/table?user=' + results[0].id_user + '&sort=asc_num');
-            res.render('table', { id_user: results[0].id_user, layout: false });
-            //res.redirect('/static/html/table.html');
+            req.session.id_user = results[0].id_user;
+            res.redirect('home?id_user=' + results[0].id_user);
+            //res.render('table', { id_user: results[0].id_user, layout: false });
         }
         else {
             res.send("Sorry, I don`t know you");
@@ -28,19 +46,16 @@ router.post('/login', urlencodedParser, async (req, res) => {
 });
 
 //регистрация
-router.post('/signup', urlencodedParser, async (req, res) => {
+router.post('/signup', urlencodedParser, redirectHome, async (req, res) => {
     res.set('Access-Control-Allow-Origin', '*')
 
     try {
-        //console.log(req.body.login);
-        //console.log(req.body.password);
         let results = await db.check_user(req.body.login);
         if (results.length != 0) {
             res.send('Such login already exists');
         }
         else {
-            let signup = await db.signup(req.body.login, req.body.password);
-            console.log('signup user: ' + signup);
+            await db.signup(req.body.login, req.body.password);
             res.redirect('/login')
         }
     } catch (e) {
@@ -50,10 +65,20 @@ router.post('/signup', urlencodedParser, async (req, res) => {
     }
 });
 
+router.get('/home', redirectLogin, (req, res) => {
+    res.render('table', { id_user: req.query.id_user, layout: false });
+});
+
+
 
 //вывод записей пользователя
 router.get('/table', urlencodedParser, async (req, res) => {
     res.set('Access-Control-Allow-Origin', '*')
+
+    //let user = req.session.id_user;
+    //console.log('table: ' + user)
+
+
     var sort = [];
     switch (req.query.sort) {
         case 'asc_num': // сортировка по возрастанию id
@@ -80,9 +105,19 @@ router.get('/table', urlencodedParser, async (req, res) => {
     } catch (e) {
         console.log(e);
         res.sendStatus(500);
-
     }
 
 });
 
+
+
+router.get('/logout', redirectLogin, (req, res, next) => {
+    if (req.session.id_user) {
+        req.session.destroy(function () {
+            res.redirect('/');
+        });
+    }
+});
+
 module.exports = router;
+

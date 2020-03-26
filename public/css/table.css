@@ -18,6 +18,14 @@ ul{
     margin: auto;
 }
 
-.main_div{
+
+.nav-link{
+     font-size: large;
+}
+
+
+.input{
+   
+    width: 40%;
     margin: auto;
 }

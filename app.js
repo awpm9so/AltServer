@@ -5,8 +5,10 @@ var bodyParser = require('body-parser');
 const user = require('./routes/user');
 const db = require('./db/db');
 const exphbs = require('express-handlebars');
+const session = require('express-session');
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
+const app = express();
 
 /*
 const db = mysql.createConnection({
@@ -24,7 +26,15 @@ db.connect((err) => {
 });
 */
 
-const app = express();
+
+app.use(session({
+    secret: 'my_secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 60 * 1000 * 30
+    }
+}));
 
 const hbs = exphbs.create({
     defaultLayout: 'main',
@@ -42,18 +52,27 @@ app.use(user);
 //app.use(express.urlencoded({ extended: true }))
 
 
+const redirectHome = (req, res, next) => {
+    if (req.session.id_user) {
+        res.redirect('/home?id_user=' + req.session.id_user)
+    }
+    else {
+        next();
+    }
+}
+
 app.get('/', urlencodedParser, (req, res) => {
     res.set('Access-Control-Allow-Origin', '*')
     res.render("hello", { page_title: "Главная" });
 
 });
 
-app.get('/login', urlencodedParser, (req, res) => {
+app.get('/login', urlencodedParser, redirectHome, (req, res) => {
     res.set('Access-Control-Allow-Origin', '*')
     res.render("form_login", { page_title: "Авторизация" });
 });
 
-app.get('/signup', urlencodedParser, (req, res) => {
+app.get('/signup', urlencodedParser, redirectHome, (req, res) => {
     res.set('Access-Control-Allow-Origin', '*')
     res.render("form_signup", { page_title: "Регистрация" });
 });
