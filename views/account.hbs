@@ -1,0 +1,36 @@
+<h1>{{page_title}}</h1>
+
+
+
+<div id='pic'>
+    <img width="300" height="300" src="http://localhost:3000/static/img/def_avatar.jpg" alt="Загрузка..." id="avatar">
+</div>
+
+
+
+<p style="padding: 10px;">
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapse" aria-expanded="false"
+        aria-controls="collapse">
+        Загрузить аватар
+    </button>
+</p>
+<div id="collapse" class="collapse">
+    <form action="/avatar" method="post" enctype="multipart/form-data">
+        <label>Загрузить аватар</label><br>
+        <input type="file" name="avatar" /><br><br>
+        <input class="btn btn-success" type="submit" value="Загрузить" />
+    </form>
+</div>
+
+
+
+<script>
+    if ({{ check_avatar }}) {
+        var pic = document.getElementById('pic');
+        var image = document.createElement('img');
+        image.width = 300;
+        image.height = 300;
+        image.src = "http://localhost:3000/static/img/{{avatar}}"
+        pic.replaceChild(image, pic.children[0]);
+    }
+</script>

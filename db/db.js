@@ -84,7 +84,6 @@ altdb.add_message = (value, id_user) => {
 
 altdb.update_message = (value, id_message) => {
     return new Promise((resolve, reject) => {
-        // UPDATE`message` SET`value` = 'ИЗМЕНЕНО прямо сейчас' WHERE`message`.`id` = 4
         pool.query("UPDATE`message` SET`value` = ? WHERE`message`.`id` = ?", [value, id_message], (err, results) => {
             if (err) {
                 return reject(err);
@@ -106,5 +105,26 @@ altdb.delete_message = (id_message) => {
     });
 };
 
+altdb.get_user = (id_user) => {
+    return new Promise((resolve, reject) => {
+        pool.query(`SELECT * FROM user WHERE id_user = ${id_user}`, (err, results) => {
+            if (err) {
+                return reject(err);
+            }
+            return resolve(results);
+        });
+    });
+};
+
+altdb.update_avatar = (id_user, avatar) => {
+    return new Promise((resolve, reject) => {
+        pool.query("UPDATE`user` SET`avatar` = ? WHERE`user`.`id_user` = ?", [avatar, id_user], (err, results) => {
+            if (err) {
+                return reject(err);
+            }
+            return resolve(results);
+        });
+    });
+};
 
 module.exports = altdb;

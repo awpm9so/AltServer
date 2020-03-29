@@ -24,7 +24,7 @@ const redirectHome = (req, res, next) => {
 }
 
 //аторизация
-router.post('/login', urlencodedParser, async (req, res) => {
+router.post('/login', urlencodedParser, redirectHome, async (req, res) => {
     res.set('Access-Control-Allow-Origin', '*')
 
     try {
@@ -32,7 +32,8 @@ router.post('/login', urlencodedParser, async (req, res) => {
         let results = await db.login(req.body.login, req.body.password);
         if (results.length == 1) {
             req.session.id_user = results[0].id_user;
-            res.redirect('home?id_user=' + results[0].id_user);
+            req.session.avatar = results[0].avatar;
+            res.redirect('list?id_user=' + results[0].id_user);
             //res.render('table', { id_user: results[0].id_user, layout: false });
         }
         else {
@@ -65,19 +66,17 @@ router.post('/signup', urlencodedParser, redirectHome, async (req, res) => {
     }
 });
 
-router.get('/home', redirectLogin, (req, res) => {
-    res.render('table', { id_user: req.query.id_user, layout: false });
+router.get('/list', redirectLogin, (req, res) => {
+    //для того, чтобы нельзя было вернуться на /list после нажатия Logout и "Назад" в браузере
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
+    res.render('table', { id_user: req.session.id_user, layout: false });
 });
 
 
 
 //вывод записей пользователя
-router.get('/table', urlencodedParser, async (req, res) => {
+router.get('/table', urlencodedParser, redirectLogin, async (req, res) => {
     res.set('Access-Control-Allow-Origin', '*')
-
-    //let user = req.session.id_user;
-    //console.log('table: ' + user)
-
 
     var sort = [];
     switch (req.query.sort) {
@@ -109,7 +108,17 @@ router.get('/table', urlencodedParser, async (req, res) => {
 
 });
 
+router.get('/account', redirectLogin, async (req, res, next) => {
+    //для того, чтобы нельзя было вернуться на /account после нажатия Logout и "Назад" в браузере
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
+    if (req.session.avatar) {
+        res.render('account', { page_title: "Мой профиль", check_avatar: true, avatar: req.session.avatar, layout: 'home' });
+    }
+    else {
+        res.render('account', { page_title: "Мой профиль", check_avatar: false, avatar: req.session.avatar, layout: 'home' });
+    }
 
+});
 
 router.get('/logout', redirectLogin, (req, res, next) => {
     if (req.session.id_user) {
