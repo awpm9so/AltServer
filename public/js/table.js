@@ -1,5 +1,7 @@
 
 
+
+
 var input = document.getElementById("add_input");
 var table = document.getElementById("my_table");
 var radio = document.getElementsByName("sort");
@@ -31,8 +33,8 @@ function sort() {
 
 //клик по кнопке удалить, для удаления строки записи
 $("#my_table").on("click", ".delete_button", function (e) {
-  id_delete = $(this).parent().siblings(":first").text();
-  //var value=$(this).closest('tr').children('td:first').text();
+  //id_delete = $(this).parent().siblings(":first").text();
+  var id_delete = $(this).closest('tr').children('td:first').text();
   Delete(id_delete);
 });
 
@@ -45,8 +47,28 @@ $("#my_table").on("click", "tr", function (e) {
   //console.log(id_update);
 });
 
+//формирую таблицу записей по json файлу
+function FormationTable(result) {
+  table.innerText = '';
+  var array = JSON.parse(result);
+  for (var i = 0; i < array.length; i++) {
+    var tr = document.createElement('tr');
+    var id = document.createElement('td')
+    var value = document.createElement('td')
+    var button = document.createElement('button')
+    button.classList.add("btn");
+    button.classList.add("btn-secondary");
+    button.classList.add("delete_button");
+    button.innerText = "Delete";
+    id.innerText = array[i].id;
+    value.innerText = array[i].value
+    tr.appendChild(id);
+    tr.appendChild(value);
+    tr.appendChild(button);
+    table.appendChild(tr);
+  }
 
-
+}
 
 
 function PrintTable(sort_type, user) {
@@ -55,7 +77,7 @@ function PrintTable(sort_type, user) {
     method: 'get',
     dataType: 'html',
     success: function (data) {
-      $("#my_table").html(data);
+      FormationTable(data);
     }
   });
 }
@@ -136,7 +158,7 @@ let editingTd;
 
 //редактировние при клике на запись
 $('body').on('click', 'table', function (event) {
-  // 3 возможных цели
+
   let target = event.target.closest('.edit-cancel,.edit-ok,td');
 
   if (!table.contains(target)) return;

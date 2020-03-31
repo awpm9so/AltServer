@@ -24,7 +24,28 @@ const fileFilter = (req, file, cb) => {
 }
 
 
+const redirectLogin = (req, res, next) => {
+    if (!req.session.id_user) {
+        res.redirect('/login')
+    }
+    else {
+        next();
+    }
+}
+
 const upload = multer({ storage: storageConfig, fileFilter: fileFilter }).single("avatar");
+
+router.get('/account', redirectLogin, async (req, res, next) => {
+    //для того, чтобы нельзя было вернуться на /account после нажатия Logout и "Назад" в браузере
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
+    if (req.session.avatar) {
+        res.render('account', { page_title: "Мой профиль", check_avatar: true, avatar: req.session.avatar, layout: 'home' });
+    }
+    else {
+        res.render('account', { page_title: "Мой профиль", check_avatar: false, avatar: req.session.avatar, layout: 'home' });
+    }
+
+});
 
 
 router.post('/avatar', upload, async (req, res, next) => {
@@ -34,8 +55,9 @@ router.post('/avatar', upload, async (req, res, next) => {
         res.send("Ошибка при загрузке файла");
     else {
         try {
-            let results = await db.update_avatar(req.session.id_user, avatar.filename);
-            res.render('account', { page_title: "Мой профиль", check_avatar: true, avatar: avatar.filename, layout: 'home' });
+            await db.update_avatar(req.session.id_user, avatar.filename);
+            req.session.avatar = avatar.filename;
+            res.redirect('/account');
         } catch (e) {
             console.log(e);
             res.sendStatus(500);

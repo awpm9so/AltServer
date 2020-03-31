@@ -69,7 +69,7 @@ router.post('/signup', urlencodedParser, redirectHome, async (req, res) => {
 router.get('/list', redirectLogin, (req, res) => {
     //для того, чтобы нельзя было вернуться на /list после нажатия Logout и "Назад" в браузере
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
-    res.render('table', { id_user: req.session.id_user, layout: false });
+    res.render('table', { id_user: req.session.id_user, layout: "home" });
 });
 
 
@@ -98,8 +98,7 @@ router.get('/table', urlencodedParser, redirectLogin, async (req, res) => {
 
     try {
         let results = await db.oneUser(req.query.user, sort);
-        res.render("tab", { messages: results, layout: false });
-
+        res.send(JSON.stringify(results));
 
     } catch (e) {
         console.log(e);
@@ -108,17 +107,7 @@ router.get('/table', urlencodedParser, redirectLogin, async (req, res) => {
 
 });
 
-router.get('/account', redirectLogin, async (req, res, next) => {
-    //для того, чтобы нельзя было вернуться на /account после нажатия Logout и "Назад" в браузере
-    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
-    if (req.session.avatar) {
-        res.render('account', { page_title: "Мой профиль", check_avatar: true, avatar: req.session.avatar, layout: 'home' });
-    }
-    else {
-        res.render('account', { page_title: "Мой профиль", check_avatar: false, avatar: req.session.avatar, layout: 'home' });
-    }
 
-});
 
 router.get('/logout', redirectLogin, (req, res, next) => {
     if (req.session.id_user) {

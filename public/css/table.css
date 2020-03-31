@@ -8,12 +8,6 @@ input{
     font-size: 20px
 }
 
-ul{
-    font-size: 10px;
-    list-style-type: none; 
-    text-align: center;
-}
-
 #sort{
     margin: auto;
 }
@@ -27,4 +21,12 @@ ul{
 .input{
     width: 40%;
     margin: auto;
+}
+
+.container{
+    text-align: center;      
+}
+
+tr{
+    border: outset;
 }
